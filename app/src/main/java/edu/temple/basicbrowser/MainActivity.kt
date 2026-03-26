@@ -25,8 +25,24 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object: WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                // Update address bar with the actual loaded URL (handles redirects)
+                url?.let { urlEditText.setText(it) }
             }
         }
 
+        goButton.setOnClickListener {
+            val formattedUrl = formatUrl(urlEditText.text.toString())
+            urlEditText.setText(formattedUrl)
+            webView.loadUrl(formattedUrl)
+        }
+
+    }
+
+    private fun formatUrl(url: String): String {
+        return if (url.startsWith("http://") || url.startsWith("https://")) {
+            url
+        } else {
+            "https://$url"
+        }
     }
 }
